@@ -1,12 +1,16 @@
 # Project
-
 This is the vibecut. It's like claude code vibe coding verison of capcut that helps you to make video clips from raw video assets.
 
 Fully agentic driven by LLM agent brain, a set of atomic skills following claude's best practice of agents, orchestrate all the skills for various intent of video cliping and production tasks.
 
 # Why
+Capcut sucks and I paid for it three times in a row in the last ~3 months for simple features:
+1) I used the rolling caption feature just to realize it locks you at export unless you subscribe
+2) I tried to buy 3 seats for my team just to find out you can either buy 2 or 5 seats
+3) Then it just bumped its price by 2x+ for no reason.
 
-
+So I decided to build an open source alternative. Who says video editing has to use hands? 
+Multi-modality models can be used as brain and eyes, agents with programmatic access can act as hands, so you can just chill as the creative director.
 
 ## Context
 This is a media project using claude code + skills to automatically make short videos from a library of raw video assets.
