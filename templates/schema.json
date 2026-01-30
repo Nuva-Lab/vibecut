@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "vibecut Project Configuration",
+  "description": "Schema for project.json files in vibecut video projects",
+  "type": "object",
+  "required": ["name", "source_video"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Project identifier (used for folder name)"
+    },
+    "source_video": {
+      "type": "string",
+      "description": "Path to source video (local path, URL, or Google Drive link)"
+    },
+    "script": {
+      "type": "string",
+      "description": "Voiceover script text (Chinese or English)"
+    },
+    "voice_embedding": {
+      "type": "string",
+      "description": "Path to voice embedding .safetensors file"
+    },
+    "caption_mode": {
+      "enum": ["auto", "asr", "character"],
+      "default": "auto",
+      "description": "Caption generation mode: auto (ASR if voiceover), asr (force ASR), character (timing estimate)"
+    },
+    "titleCard": {
+      "type": "object",
+      "description": "Opening title card configuration",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Main title text"
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Subtitle or hook text"
+        },
+        "durationMs": {
+          "type": "number",
+          "default": 3000,
+          "description": "Title card duration in milliseconds"
+        }
+      }
+    },
+    "speakers": {
+      "type": "array",
+      "description": "Speaker label annotations",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Speaker's name"
+          },
+          "title": {
+            "type": "string",
+            "description": "Speaker's role or title"
+          },
+          "box2d": {
+            "type": "array",
+            "items": {"type": "number"},
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Label position [y, x] in 0-1000 coordinates"
+          },
+          "showFromMs": {
+            "type": "number",
+            "description": "When to show label (milliseconds)"
+          },
+          "showUntilMs": {
+            "type": "number",
+            "description": "When to hide label (milliseconds)"
+          }
+        }
+      }
+    },
+    "context_badge": {
+      "type": "object",
+      "description": "Context badge (location/event)",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "Location name"
+        },
+        "event": {
+          "type": "string",
+          "description": "Event name"
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "description": "Audio mixing configuration",
+      "properties": {
+        "original_volume": {
+          "type": "number",
+          "default": 0.02,
+          "description": "Original video audio volume (0-1)"
+        },
+        "voiceover_volume": {
+          "type": "number",
+          "default": 1.0,
+          "description": "Voiceover audio volume (0-1)"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "description": "Output format configuration",
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["16:9", "9:16", "1:1", "4:5"],
+          "default": "16:9"
+        },
+        "resolution": {
+          "type": "array",
+          "items": {"type": "number"},
+          "default": [1920, 1080]
+        },
+        "fps": {
+          "type": "number",
+          "default": 30
+        },
+        "platform": {
+          "type": "string",
+          "enum": ["youtube", "tiktok", "instagram_reels", "instagram_feed", "linkedin", "twitter"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "remotion-graphics",
+  "version": "1.0.0",
+  "description": "Davos video motion graphics with Remotion",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "build": "remotion bundle"
+  },
+  "dependencies": {
+    "@remotion/captions": "^4.0.410",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.410",
+    "@remotion/media": "^4.0.410",
+    "@remotion/player": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}

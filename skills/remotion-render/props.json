@@ -1,0 +1,675 @@
+{
+  "videoSrc": "source_video.mp4",
+  "captions": [
+    {
+      "text": "在达沃斯的这场讨论里，",
+      "startMs": 240,
+      "endMs": 2000,
+      "words": [
+        {
+          "text": "在",
+          "startMs": 240,
+          "endMs": 480
+        },
+        {
+          "text": "达沃斯",
+          "startMs": 480,
+          "endMs": 960
+        },
+        {
+          "text": "的",
+          "startMs": 960,
+          "endMs": 1040
+        },
+        {
+          "text": "这场",
+          "startMs": 1040,
+          "endMs": 1360
+        },
+        {
+          "text": "讨论",
+          "startMs": 1360,
+          "endMs": 1760
+        },
+        {
+          "text": "里",
+          "startMs": 1760,
+          "endMs": 2000
+        }
+      ],
+      "timestampMs": 240,
+      "confidence": null
+    },
+    {
+      "text": "Voyager Space的CEO Dylan Taylor，",
+      "startMs": 2160,
+      "endMs": 4480,
+      "words": [
+        {
+          "text": "Voyager",
+          "startMs": 2160,
+          "endMs": 2640
+        },
+        {
+          "text": "Space",
+          "startMs": 2640,
+          "endMs": 3040
+        },
+        {
+          "text": "的",
+          "startMs": 3040,
+          "endMs": 3120
+        },
+        {
+          "text": "CEO",
+          "startMs": 3120,
+          "endMs": 3760
+        },
+        {
+          "text": "Dylan",
+          "startMs": 3760,
+          "endMs": 4080
+        },
+        {
+          "text": "Taylor",
+          "startMs": 4080,
+          "endMs": 4480
+        }
+      ],
+      "timestampMs": 2160,
+      "confidence": null
+    },
+    {
+      "text": "抛出了一个让人沉默的问题。",
+      "startMs": 4720,
+      "endMs": 6720,
+      "words": [
+        {
+          "text": "抛出",
+          "startMs": 4720,
+          "endMs": 5040
+        },
+        {
+          "text": "了",
+          "startMs": 5040,
+          "endMs": 5200
+        },
+        {
+          "text": "一个",
+          "startMs": 5200,
+          "endMs": 5440
+        },
+        {
+          "text": "让",
+          "startMs": 5440,
+          "endMs": 5600
+        },
+        {
+          "text": "人",
+          "startMs": 5600,
+          "endMs": 5760
+        },
+        {
+          "text": "沉默",
+          "startMs": 5760,
+          "endMs": 6160
+        },
+        {
+          "text": "的",
+          "startMs": 6160,
+          "endMs": 6240
+        },
+        {
+          "text": "问题",
+          "startMs": 6240,
+          "endMs": 6720
+        }
+      ],
+      "timestampMs": 4720,
+      "confidence": null
+    },
+    {
+      "text": "当中国空间站上已经有军人的时候，",
+      "startMs": 7120,
+      "endMs": 9520,
+      "words": [
+        {
+          "text": "当",
+          "startMs": 7120,
+          "endMs": 7280
+        },
+        {
+          "text": "中国",
+          "startMs": 7280,
+          "endMs": 7600
+        },
+        {
+          "text": "空间站",
+          "startMs": 7600,
+          "endMs": 8160
+        },
+        {
+          "text": "上",
+          "startMs": 8160,
+          "endMs": 8320
+        },
+        {
+          "text": "已经",
+          "startMs": 8320,
+          "endMs": 8560
+        },
+        {
+          "text": "有",
+          "startMs": 8560,
+          "endMs": 8640
+        },
+        {
+          "text": "军人",
+          "startMs": 8640,
+          "endMs": 9040
+        },
+        {
+          "text": "的",
+          "startMs": 9040,
+          "endMs": 9120
+        },
+        {
+          "text": "时候",
+          "startMs": 9120,
+          "endMs": 9520
+        }
+      ],
+      "timestampMs": 7120,
+      "confidence": null
+    },
+    {
+      "text": "当各国都在为月球资源布局的时候，",
+      "startMs": 9760,
+      "endMs": 12160,
+      "words": [
+        {
+          "text": "当",
+          "startMs": 9760,
+          "endMs": 9920
+        },
+        {
+          "text": "各国",
+          "startMs": 9920,
+          "endMs": 10240
+        },
+        {
+          "text": "都",
+          "startMs": 10240,
+          "endMs": 10400
+        },
+        {
+          "text": "在",
+          "startMs": 10400,
+          "endMs": 10560
+        },
+        {
+          "text": "为",
+          "startMs": 10560,
+          "endMs": 10640
+        },
+        {
+          "text": "月球",
+          "startMs": 10640,
+          "endMs": 10960
+        },
+        {
+          "text": "资源",
+          "startMs": 10960,
+          "endMs": 11280
+        },
+        {
+          "text": "布局",
+          "startMs": 11280,
+          "endMs": 11600
+        },
+        {
+          "text": "的",
+          "startMs": 11600,
+          "endMs": 11680
+        },
+        {
+          "text": "时候",
+          "startMs": 11680,
+          "endMs": 12160
+        }
+      ],
+      "timestampMs": 9760,
+      "confidence": null
+    },
+    {
+      "text": "太空的未来会是什么样？",
+      "startMs": 12320,
+      "endMs": 13920,
+      "words": [
+        {
+          "text": "太空",
+          "startMs": 12320,
+          "endMs": 12720
+        },
+        {
+          "text": "的",
+          "startMs": 12720,
+          "endMs": 12800
+        },
+        {
+          "text": "未来",
+          "startMs": 12800,
+          "endMs": 13120
+        },
+        {
+          "text": "会",
+          "startMs": 13120,
+          "endMs": 13280
+        },
+        {
+          "text": "是",
+          "startMs": 13280,
+          "endMs": 13360
+        },
+        {
+          "text": "什么样",
+          "startMs": 13360,
+          "endMs": 13920
+        }
+      ],
+      "timestampMs": 12320,
+      "confidence": null
+    },
+    {
+      "text": "是第一个在太空出生的婴儿，",
+      "startMs": 14160,
+      "endMs": 15920,
+      "words": [
+        {
+          "text": "是",
+          "startMs": 14160,
+          "endMs": 14400
+        },
+        {
+          "text": "第一个",
+          "startMs": 14400,
+          "endMs": 14720
+        },
+        {
+          "text": "在",
+          "startMs": 14720,
+          "endMs": 14800
+        },
+        {
+          "text": "太空",
+          "startMs": 14800,
+          "endMs": 15120
+        },
+        {
+          "text": "出生",
+          "startMs": 15120,
+          "endMs": 15440
+        },
+        {
+          "text": "的",
+          "startMs": 15440,
+          "endMs": 15520
+        },
+        {
+          "text": "婴儿",
+          "startMs": 15520,
+          "endMs": 15920
+        }
+      ],
+      "timestampMs": 14160,
+      "confidence": null
+    },
+    {
+      "text": "还是第一个在太空战争中牺牲的士兵，",
+      "startMs": 15920,
+      "endMs": 18240,
+      "words": [
+        {
+          "text": "还是",
+          "startMs": 15920,
+          "endMs": 16160
+        },
+        {
+          "text": "第一个",
+          "startMs": 16160,
+          "endMs": 16480
+        },
+        {
+          "text": "在",
+          "startMs": 16480,
+          "endMs": 16560
+        },
+        {
+          "text": "太空",
+          "startMs": 16560,
+          "endMs": 16880
+        },
+        {
+          "text": "战争",
+          "startMs": 16880,
+          "endMs": 17200
+        },
+        {
+          "text": "中",
+          "startMs": 17200,
+          "endMs": 17360
+        },
+        {
+          "text": "牺牲",
+          "startMs": 17360,
+          "endMs": 17680
+        },
+        {
+          "text": "的",
+          "startMs": 17680,
+          "endMs": 17760
+        },
+        {
+          "text": "士兵",
+          "startMs": 17760,
+          "endMs": 18240
+        }
+      ],
+      "timestampMs": 15920,
+      "confidence": null
+    },
+    {
+      "text": "哪个会先发生？",
+      "startMs": 18400,
+      "endMs": 19520,
+      "words": [
+        {
+          "text": "哪个",
+          "startMs": 18400,
+          "endMs": 18720
+        },
+        {
+          "text": "会先",
+          "startMs": 18720,
+          "endMs": 19040
+        },
+        {
+          "text": "发生",
+          "startMs": 19040,
+          "endMs": 19520
+        }
+      ],
+      "timestampMs": 18400,
+      "confidence": null
+    },
+    {
+      "text": "这个问题的答案，",
+      "startMs": 19840,
+      "endMs": 20720,
+      "words": [
+        {
+          "text": "这个",
+          "startMs": 19840,
+          "endMs": 20000
+        },
+        {
+          "text": "问题",
+          "startMs": 20000,
+          "endMs": 20320
+        },
+        {
+          "text": "的",
+          "startMs": 20320,
+          "endMs": 20400
+        },
+        {
+          "text": "答案",
+          "startMs": 20400,
+          "endMs": 20720
+        }
+      ],
+      "timestampMs": 19840,
+      "confidence": null
+    },
+    {
+      "text": "可能决定了整个人类文明的走向。",
+      "startMs": 20720,
+      "endMs": 22800,
+      "words": [
+        {
+          "text": "可能",
+          "startMs": 20720,
+          "endMs": 21040
+        },
+        {
+          "text": "决定",
+          "startMs": 21040,
+          "endMs": 21280
+        },
+        {
+          "text": "了",
+          "startMs": 21280,
+          "endMs": 21360
+        },
+        {
+          "text": "整个",
+          "startMs": 21360,
+          "endMs": 21680
+        },
+        {
+          "text": "人类文明",
+          "startMs": 21680,
+          "endMs": 22320
+        },
+        {
+          "text": "的",
+          "startMs": 22320,
+          "endMs": 22400
+        },
+        {
+          "text": "走向",
+          "startMs": 22400,
+          "endMs": 22800
+        }
+      ],
+      "timestampMs": 20720,
+      "confidence": null
+    },
+    {
+      "text": "这不是科幻电影，这是正在发生的现实。",
+      "startMs": 23200,
+      "endMs": 25920,
+      "words": [
+        {
+          "text": "这",
+          "startMs": 23200,
+          "endMs": 23360
+        },
+        {
+          "text": "不是",
+          "startMs": 23360,
+          "endMs": 23600
+        },
+        {
+          "text": "科幻电影",
+          "startMs": 23600,
+          "endMs": 24320
+        },
+        {
+          "text": "这是",
+          "startMs": 24480,
+          "endMs": 24720
+        },
+        {
+          "text": "正在",
+          "startMs": 24720,
+          "endMs": 24960
+        },
+        {
+          "text": "发生",
+          "startMs": 24960,
+          "endMs": 25280
+        },
+        {
+          "text": "的",
+          "startMs": 25280,
+          "endMs": 25360
+        },
+        {
+          "text": "现实",
+          "startMs": 25360,
+          "endMs": 25920
+        }
+      ],
+      "timestampMs": 23200,
+      "confidence": null
+    },
+    {
+      "text": "聪明人已经开始思考。",
+      "startMs": 26160,
+      "endMs": 27680,
+      "words": [
+        {
+          "text": "聪明人",
+          "startMs": 26160,
+          "endMs": 26720
+        },
+        {
+          "text": "已经",
+          "startMs": 26720,
+          "endMs": 26880
+        },
+        {
+          "text": "开始",
+          "startMs": 26880,
+          "endMs": 27120
+        },
+        {
+          "text": "思考",
+          "startMs": 27120,
+          "endMs": 27680
+        }
+      ],
+      "timestampMs": 26160,
+      "confidence": null
+    },
+    {
+      "text": "当我们仰望星空的时候，",
+      "startMs": 27840,
+      "endMs": 29280,
+      "words": [
+        {
+          "text": "当",
+          "startMs": 27840,
+          "endMs": 28000
+        },
+        {
+          "text": "我们",
+          "startMs": 28000,
+          "endMs": 28240
+        },
+        {
+          "text": "仰望",
+          "startMs": 28240,
+          "endMs": 28480
+        },
+        {
+          "text": "星空",
+          "startMs": 28480,
+          "endMs": 28880
+        },
+        {
+          "text": "的",
+          "startMs": 28880,
+          "endMs": 28960
+        },
+        {
+          "text": "时候",
+          "startMs": 28960,
+          "endMs": 29280
+        }
+      ],
+      "timestampMs": 27840,
+      "confidence": null
+    },
+    {
+      "text": "看到的，",
+      "startMs": 29280,
+      "endMs": 29680,
+      "words": [
+        {
+          "text": "看到",
+          "startMs": 29280,
+          "endMs": 29600
+        },
+        {
+          "text": "的",
+          "startMs": 29600,
+          "endMs": 29680
+        }
+      ],
+      "timestampMs": 29280,
+      "confidence": null
+    },
+    {
+      "text": "是希望，",
+      "startMs": 29680,
+      "endMs": 30240,
+      "words": [
+        {
+          "text": "是",
+          "startMs": 29680,
+          "endMs": 29760
+        },
+        {
+          "text": "希望",
+          "startMs": 29760,
+          "endMs": 30240
+        }
+      ],
+      "timestampMs": 29680,
+      "confidence": null
+    },
+    {
+      "text": "还是战场？",
+      "startMs": 30240,
+      "endMs": 30880,
+      "words": [
+        {
+          "text": "还是",
+          "startMs": 30240,
+          "endMs": 30400
+        },
+        {
+          "text": "战场",
+          "startMs": 30400,
+          "endMs": 30880
+        }
+      ],
+      "timestampMs": 30240,
+      "confidence": null
+    }
+  ],
+  "speakers": [
+    {
+      "name": "Dylan Taylor",
+      "title": "CEO, Voyager Space",
+      "box2d": [
+        300,
+        400
+      ],
+      "showFromMs": 0,
+      "showUntilMs": 5000
+    }
+  ],
+  "contextBadge": {
+    "location": "Davos 2026",
+    "event": "Semafor USA House"
+  },
+  "titleCard": {
+    "title": "太空的未来",
+    "subtitle": "是新家园，还是战场？",
+    "durationMs": 3000
+  },
+  "originalAudioVolume": 0.02
+}

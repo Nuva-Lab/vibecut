@@ -1,0 +1,43 @@
+{
+  "$schema": "../schema.json",
+  "type": "commentary",
+  "description": "Full voiceover commentary video with karaoke captions. Best for: adding your perspective to existing footage, creating explainer content.",
+
+  "required_fields": ["source_video", "script"],
+  "optional_fields": ["voice_embedding", "speakers", "context_badge", "titleCard"],
+
+  "defaults": {
+    "audio": {
+      "original_volume": 0.02,
+      "voiceover_volume": 1.0
+    },
+    "caption_mode": "auto",
+    "output": {
+      "format": "16:9",
+      "resolution": [1920, 1080],
+      "fps": 30
+    }
+  },
+
+  "workflow": [
+    "validate-media",
+    "voice-clone/speak",
+    "align-captions",
+    "make-video"
+  ],
+
+  "example": {
+    "name": "my_commentary",
+    "source_video": "source.mp4",
+    "script": "Your voiceover script here...",
+    "titleCard": {
+      "title": "Video Title",
+      "subtitle": "Hook or question",
+      "durationMs": 3000
+    },
+    "context_badge": {
+      "location": "Location",
+      "event": "Event Name"
+    }
+  }
+}

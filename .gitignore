@@ -1,0 +1,80 @@
+# =============================================================================
+# VIBECUT .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Secrets & Configuration
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# -----------------------------------------------------------------------------
+# User Projects & Generated Content
+# -----------------------------------------------------------------------------
+# User's working projects (contain personal videos)
+projects/*
+!projects/.gitkeep
+
+# Generated outputs
+assets/outputs/*
+!assets/outputs/.gitkeep
+
+# Voice embeddings (contain voice data)
+assets/voice_embeddings/*
+!assets/voice_embeddings/.gitkeep
+
+# Legacy directories (from davos_2026)
+video_projects/
+raw_assets/
+
+# -----------------------------------------------------------------------------
+# Build & Dependencies
+# -----------------------------------------------------------------------------
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+*.egg
+
+# Node.js (Remotion)
+node_modules/
+skills/remotion-render/node_modules/
+
+# Remotion build artifacts
+skills/remotion-render/out/
+skills/remotion-render/public/*
+!skills/remotion-render/public/.gitkeep
+
+# -----------------------------------------------------------------------------
+# IDE & System
+# -----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code / AI editors
+.cursor/
+.windsurf/
+.opencode/
+.claude/settings*.json
+
+# -----------------------------------------------------------------------------
+# Temporary & Logs
+# -----------------------------------------------------------------------------
+*.tmp
+*.temp
+*.log
+.pytest_cache/
+.mypy_cache/

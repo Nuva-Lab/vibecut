@@ -1,0 +1,39 @@
+{
+  "$schema": "../schema.json",
+  "type": "highlights",
+  "description": "Auto-selected highlight reel from golden segments. Best for: quick compilation of best moments, minimal editing needed.",
+
+  "required_fields": ["source_video"],
+  "optional_fields": ["min_quality_score", "max_segments", "context_badge"],
+
+  "defaults": {
+    "min_quality_score": 7,
+    "max_segments": 5,
+    "segment_duration": {
+      "min": 10,
+      "max": 30
+    },
+    "audio": {
+      "original_volume": 1.0
+    },
+    "output": {
+      "format": "16:9",
+      "resolution": [1920, 1080],
+      "fps": 30
+    }
+  },
+
+  "workflow": [
+    "validate-media",
+    "find-golden-segments",
+    "extract-clip",
+    "make-video"
+  ],
+
+  "example": {
+    "name": "my_highlights",
+    "source_video": "long_video.mp4",
+    "min_quality_score": 8,
+    "max_segments": 3
+  }
+}

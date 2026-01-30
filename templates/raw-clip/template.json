@@ -1,0 +1,31 @@
+{
+  "$schema": "../schema.json",
+  "type": "raw-clip",
+  "description": "Simple clip extraction with timestamps. Best for: extracting specific moments, quick sharing without editing.",
+
+  "required_fields": ["source_video", "start_time", "end_time"],
+  "optional_fields": ["output_format"],
+
+  "defaults": {
+    "audio": {
+      "original_volume": 1.0
+    },
+    "output": {
+      "format": "16:9",
+      "resolution": [1920, 1080],
+      "fps": 30
+    }
+  },
+
+  "workflow": [
+    "validate-media",
+    "extract-clip"
+  ],
+
+  "example": {
+    "name": "my_clip",
+    "source_video": "source.mp4",
+    "start_time": "00:01:30",
+    "end_time": "00:02:15"
+  }
+}
