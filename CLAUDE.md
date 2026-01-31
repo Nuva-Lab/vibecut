@@ -39,8 +39,17 @@ It also supports passing in url for large video file https://ai.google.dev/gemin
 ## Architecture
 ```
 skills/
+├── talking-head/          # Direct-to-camera video pipeline
+│   ├── process_video.py   # Main pipeline orchestrator
+│   ├── sentence_split.py  # Split at pauses, build sentence index
+│   ├── analyze_script.py  # Text-first: Gemini reads transcript
+│   ├── stitch_clips.py    # Concatenate approved clips
+│   ├── lowres_convert.py  # Optional: video verification
+│   └── batch_analyze.py   # Optional: video verification
+├── chunk-process/         # Smart video chunking + transcription
+│   ├── smart_chunk.py     # Split at natural pauses (2.5-3.5 min)
+│   └── mlx_transcribe.py  # MLX Qwen3-ASR (--word-timestamps)
 ├── analyze-video/         # Gemini: content understanding, speaker ID
-├── find-golden-segments/  # Gemini: find naturally clean, clip-worthy moments
 ├── extract-clip/          # FFmpeg: video cutting
 ├── transcribe-audio/      # Qwen3-ASR: speech → text with timestamps
 ├── align-captions/        # Qwen3-ForcedAligner + jieba: karaoke captions
@@ -50,19 +59,12 @@ skills/
 ├── voice-clone/           # fal.ai Qwen3-TTS: voice cloning + speech
 ├── make-video/            # Orchestrator: full video production pipeline
 ├── remotion-render/       # Remotion: motion graphics + captions
-│   ├── src/VideoClip.tsx  # Main composition
-│   └── src/components/    # RollingCaption (karaoke), SpeakerLabel, etc.
 ├── validate-media/        # ffprobe: pre-flight media validation
 ├── inspect-video/         # Gemini: quality inspection & verification
-└── shared/                # gemini_client.py, common utilities
+└── shared/                # gemini_client.py (with multi-file upload)
 
 raw_assets/                # Shared raw footage (H.264 converted)
 video_projects/<name>/     # Self-contained project folders
-    ├── project.json       # Config: script, speakers, audio levels
-    ├── source_video.mp4   # Input video
-    ├── voiceover.wav      # Generated voiceover
-    ├── captions.json      # Phrase + word-level timestamps
-    └── output/final.mp4   # Rendered output
 ```
 
 ## Workflow
@@ -92,8 +94,10 @@ final.mp4 (karaoke captions, speaker labels, motion graphics)
 - [x] Phase 5: Voice Cloning - qwen3-tts + DeepFilterNet3 enhancement
 - [x] Phase 6: Remotion Integration - Karaoke captions + motion graphics
 - [x] Phase 7: Advanced Audio - mlx-audio ASR + SAM-Audio separation
-- [ ] Phase 8: Speaker Detection - Gemini bounding boxes for annotations
-- [ ] Phase 9: Vertical Format - 9:16 cropping for TikTok/Reels
+- [x] Phase 8: Talking-Head Pipeline - MLX transcription + smart chunking + golden segments
+- [x] Phase 8.5: V3 Pipeline - Sentence-level clipping + batch Gemini analysis
+- [ ] Phase 9: Speaker Detection - Gemini bounding boxes for annotations
+- [ ] Phase 10: Vertical Format - 9:16 cropping for TikTok/Reels
 
 ## Clip Criteria (all valued)
 - Notable quotes from speakers
@@ -211,6 +215,213 @@ final.mp4 (karaoke captions, speaker labels, motion graphics)
   - Fixed RollingCaption interpolation error when word timestamps are identical
 - **Final output**: 31s video with title card, karaoke captions, original audio audible in background
 
+## 2025-01-30: Phase 8 - Talking-Head Pipeline
+- **Problem**: Long talking-head videos (47+ min) too large for single Gemini upload
+- **Solution**: Smart chunking + MLX transcription + interactive golden segment selection
+- **New skills**:
+  - `skills/chunk-process/smart_chunk.py` - Split at natural pauses (silence detection)
+  - `skills/chunk-process/mlx_transcribe.py` - MLX Qwen3-ASR with auto language detection
+  - `skills/talking-head/find_golden_segments.py` - Gemini finds clip-worthy moments
+  - `skills/talking-head/process_video.py` - Full pipeline orchestrator
+  - `skills/shared/gemini_client.py` - Added multi-file upload support
+- **Key improvements**:
+  - MLX-accelerated ASR (3-5x faster than CPU on Mac)
+  - Auto language detection (Chinese/English/Mixed)
+  - Smart chunking at 2.5-3.5 min boundaries (not mid-sentence)
+  - Interactive golden segment review with Claude Code
+- **Demo video**: `video_projects/fundraising_tips/output/final_clip.mp4` (86s from 47 min raw)
+  - 3 golden segments stitched: Intro → VC Hypocrisy → Signaling Risk
+  - Source: `raw_assets/fundraising_tips_raw.mp4`
+- **Removed**: `skills/koubo-edit/` (replaced by `talking-head/`)
+
+## 2025-01-30: Talking-Head Pipeline Rewrite (Text-First Analysis)
+- **Problem**: Uploading video clips to Gemini was slow and expensive
+- **Solution**: Text-first analysis with sentence-level precision
+- **Key insight**: Send full transcript as text, map highlights to clips via sentence index
+- **Architecture**:
+  ```
+  skills/talking-head/
+  ├── process_video.py    # Main pipeline orchestrator
+  ├── sentence_split.py   # Split at pauses >500ms, build sentence index
+  ├── analyze_script.py   # Text-first: Gemini reads full transcript
+  ├── stitch_clips.py     # Concatenate approved clips
+  ├── lowres_convert.py   # Optional: video verification
+  └── batch_analyze.py    # Optional: video verification
+  ```
+- **Benefits**:
+  | Before | After |
+  |--------|-------|
+  | Upload 40+ video clips | Send full transcript as text |
+  | Gemini sees chunks only | Gemini sees entire narrative |
+  | ~30 min analysis | ~30 sec analysis |
+- **Removed**: V1/V2 code, find_golden_segments.py, analyze_content.py, propose_narrative.py, verify_output.py
+- **Usage**: `python skills/talking-head/process_video.py raw.mp4 -o project/`
+
+## 2025-01-30: Recall-First Analysis + Precise Cuts
+- **Problem 1**: Gemini's "5-10 highlight moments" approach missed context, topics were incomplete
+- **Problem 2**: FFmpeg stream copy caused overlapping frames at clip boundaries (repeated words)
+- **Problem 3**: 100ms padding caused overlap when consecutive clips had <200ms natural gap
+- **Solution 1 - Recall-First Topics**:
+  - Changed analyze_script.py prompt to find complete TOPICS with arcs (hook → elaborate → conclude)
+  - Each topic includes: full clip range, essential clips, trimming guide, reorder suggestions
+  - Optimize for recall first, then trim for precision
+- **Solution 2 - Precise Cuts**:
+  - sentence_split.py and stitch_clips.py now re-encode by default (not stream copy)
+  - FFmpeg uses `-c:v libx264 -crf 18 -c:a aac` for frame-accurate cuts
+  - Added `--fast` flag for stream copy when speed matters more than precision
+- **Solution 3 - Zero Padding**:
+  - Changed default `add_padding_ms` from 100 to 0
+  - Qwen3-ForcedAligner timestamps are precise enough (~30ms)
+  - Natural speech pauses exist between clips; padding causes overlap
+  - Example: clip ends at 1958.59s, next starts at 1958.74s (0.15s gap)
+    - With 100ms padding: end=1958.69s, start=1958.64s → 50ms OVERLAP!
+    - With 0ms padding: no overlap, clips fit perfectly
+- **Results**:
+  - Topic 10 "VCs Are Hypocritical" found as complete 17-clip arc (176-192, ~177s)
+  - Full topic has proper hook, elaboration, and conclusion
+  - Zero repeated words at clip boundaries
+- **Key learning**: Better to include extra content and trim than miss key context
+
+## 2025-01-30: Precision Trimming Pipeline
+- **Problem**: Raw topic video has fillers, stutters, repetitions that need surgical removal
+- **Failed approach**: Use Gemini timestamps directly (~1s accuracy) → cuts words in half, jarring
+- **Solution**: Two-stage precision trimming
+  1. **MLX ASR + ForcedAligner**: Get word-level timestamps (~30ms precision)
+  2. **Gemini**: Identify WHAT to cut by word index (semantic understanding)
+  3. **Map**: Convert word indices to precise timestamps
+  4. **FFmpeg filter_complex**: Cut exactly at word boundaries
+- **New skill**: `skills/talking-head/precision_trim.py`
+  ```bash
+  # Full pipeline
+  python precision_trim.py run video.mp4 -o output/
+
+  # Step by step
+  python precision_trim.py transcribe video.mp4 -o transcript.json
+  python precision_trim.py identify video.mp4 transcript.json -o cuts.json
+  python precision_trim.py apply video.mp4 cuts.json transcript.json -o trimmed.mp4
+  ```
+- **Micro-segment jitter fix**:
+  - Problem: Cutting tiny fillers creates 0.3s segments → jittery playback
+  - Solution: `min_keep_duration=1.0s` - drop segments shorter than 1s
+  - Result: Smooth flow, all segments ≥1.2s
+- **Results on Topic 10**:
+  - Original: 177s → Recall clips: 175s → Precision trimmed: 144s (18% reduction)
+  - Removed: Chinese practice talk, "uh/um/like" fillers, stutters, repetitions
+  - Single speaker only (camera holder's voice removed)
+- **Key insight**: Gemini for semantics (WHAT to cut), ASR for precision (WHERE to cut)
+
+## 2025-01-31: Rolling Captions + Vertical Format + Cinematic Overlays
+- **Problem**: Trimmed video needs captions + vertical (9:16) format for TikTok/Reels
+- **Challenge**: Word timestamps are from ORIGINAL video, but trimmed video has different timing
+- **Solution**: Timestamp remapping + Remotion multi-format rendering + Gemini section titles
+- **New skills**:
+  - `skills/talking-head/generate_captions.py` - Maps timestamps, groups words into phrases
+  - `skills/talking-head/generate_sections.py` - Gemini generates meaningful section titles
+  - `skills/talking-head/render_with_captions.py` - Renders both 16:9 and 9:16 with Remotion
+- **Remotion components**:
+  - `TalkingHeadClip.tsx` - Composition for talking-head videos
+  - `SectionTitle.tsx` - Cinematic section titles with gradient text + animated lines
+  - `SpeakerLabel.tsx` - Gradient border speaker card with slide-in animation
+  - `RollingCaption.tsx` - Karaoke captions with gold word highlighting
+- **Caption formatting**:
+  | Aspect | Max Words | Max Chars | Reason |
+  |--------|-----------|-----------|--------|
+  | Horizontal (16:9) | 8 | 50 | Wider screen |
+  | Vertical (9:16) | 5 | 30 | Narrow screen |
+- **Word spacing fix**: CSS `display: inline-block` collapses spaces → use `marginRight: 0.3em`
+- **Section titles**: Gemini analyzes transcript, generates punchy titles like "VC HYPOCRISY EXPOSED"
+- **Output**: Full pipeline from 47-min raw → 144s polished clip with captions in both formats
+
+## End-to-End Pipeline Achievement
+```
+Raw Video (47 min, 4K HEVC)
+    ↓ Convert to H.264
+    ↓ Smart chunk (2.5-3.5 min)
+    ↓ MLX transcribe (word timestamps)
+    ↓ Sentence split (frame-accurate)
+    ↓ Gemini topic analysis (recall-first)
+    ↓ Stitch selected topic
+    ↓ Precision trim (remove fillers)
+    ↓ Generate captions (timestamp remap)
+    ↓ Gemini section titles
+    ↓ Remotion render
+Final: 16:9 + 9:16 with rolling captions, speaker labels, section titles
+```
+
+# Talking-Head Video Pipeline
+
+For direct-to-camera videos where speaker's original audio is kept (no voiceover).
+
+```
+Raw Video (47+ min)
+    ↓ smart_chunk.py
+Chunks (2.5-3.5 min)
+    ↓ mlx_transcribe.py --word-timestamps
+Transcript (word-level timestamps)
+    ↓ sentence_split.py (PRECISE CUTS - re-encode, no overlap)
+Sentence Clips (~10s each, frame-accurate)
+    ↓ analyze_script.py (RECALL-FIRST)
+    │  Gemini reads full transcript
+    │  Returns TOPICS with complete arcs (hook → elaborate → conclude)
+    │  Each topic has: full range, trimming guide, reorder suggestions
+Topics with clip ranges
+    ↓ [Claude Code: Select topic - full or trimmed]
+    ↓ stitch_clips.py (PRECISE CUTS)
+Final Clip (complete narrative arc)
+```
+
+## Key Insights
+
+### 1. Recall-First Topic Analysis (not precision-first highlights)
+**Old approach:** Find 5-10 "highlight moments" → Often incomplete thoughts, missing context
+**New approach:** Find complete TOPICS with full arcs → Then trim for precision
+
+For each topic, Gemini identifies:
+- **Full clip range**: ALL clips that might be relevant (optimize for recall)
+- **Arc structure**: Hook → Elaboration → Conclusion
+- **Trimming guide**: Essential vs supporting vs skippable clips
+- **Reorder suggestions**: If moving clips would improve flow
+
+### 2. Precise Cuts (zero overlap between clips)
+**Problem:** FFmpeg stream copy (`-c copy`) cuts on keyframes, causing:
+- Extra frames at clip start (seeks to previous keyframe)
+- Repeated words/phrases at clip boundaries when stitched
+
+**Solution:** Always re-encode clips with exact timestamps:
+```bash
+# sentence_split.py now uses by default:
+ffmpeg -ss START -i input.mp4 -t DURATION \
+  -c:v libx264 -preset fast -crf 18 \
+  -c:a aac -b:a 192k \
+  -async 1 -avoid_negative_ts make_zero \
+  output.mp4
+```
+
+Use `--fast` flag only when speed matters more than precision.
+
+**Quick Start:**
+```bash
+# Full pipeline (pauses for topic selection)
+python skills/talking-head/process_video.py raw_footage.mp4 -o project/
+
+# Auto-stitch top clips
+python skills/talking-head/process_video.py raw_footage.mp4 -o project/ --auto-stitch
+```
+
+### 3. Two-Phase Editing: Recall → Precision
+
+**Phase 1 - RECALL (done):**
+- Find complete topics with full arcs
+- Include ALL potentially relevant clips
+- Output: ~60-180s raw topic video
+
+**Phase 2 - PRECISION (next):**
+- Upload raw topic video to Gemini (fits in context window)
+- Gemini identifies: filler words, pauses, repetitions, speaking errors
+- Generate precise trim list with timestamps
+- Cut out imperfections for polished final clip
+- Target: ~30-60s polished video
+
 # Caption Pipeline (Karaoke Style)
 
 The complete pipeline for perfectly synced karaoke captions:
@@ -324,12 +535,23 @@ python skills/validate-media/validate.py source_video.mp4
 
 ## Key Commands
 ```bash
+# === Talking-Head Pipeline ===
+# Full pipeline (pauses for clip selection)
+python skills/talking-head/process_video.py raw_footage.mp4 -o ./output/
+
+# Auto-stitch top clips (score >= 6)
+python skills/talking-head/process_video.py raw_footage.mp4 -o ./output/ --auto-stitch
+
+# Step by step:
+python skills/chunk-process/smart_chunk.py raw_footage.mp4 -o chunks/
+python skills/chunk-process/mlx_transcribe.py chunks/ --batch --word-timestamps
+python skills/talking-head/sentence_split.py raw_footage.mp4 chunks/transcript.json -o sentence_clips/
+python skills/talking-head/analyze_script.py sentence_clips/clip_index.json -o clip_scores.json
+python skills/talking-head/stitch_clips.py clip_scores.json --approved 1,3,5,7 -o final.mp4
+
 # === Video Preparation ===
 # Convert 4K MOV to H.264 for processing
 ffmpeg -i input.MOV -c:v libx264 -preset fast -crf 23 -vf "scale=1920:1080" -c:a aac raw_assets/output.mp4
-
-# Find golden segments (clean, clip-worthy moments)
-python skills/find-golden-segments/find_golden.py raw_assets/video.mp4
 
 # === Audio Processing ===
 # Transcribe audio (when you don't have the script)
@@ -404,8 +626,9 @@ python skills/voice-clone/speak.py embedding.safetensors "Text..." output.wav --
 - **Raw footage**: `raw_assets/*.mp4` (H.264 converted)
 - **Video projects**: `video_projects/<name>/`
 - **Example outputs**:
-  - `video_projects/space_investing/output/final.mp4`
-  - `video_projects/space_future/output/final.mp4`
+  - `video_projects/space_investing/output/final.mp4` (commentary style)
+  - `video_projects/space_future/output/final.mp4` (commentary style)
+  - `video_projects/fundraising_tips/output/final_clip.mp4` (talking-head, 86s)
 
 ## Environment
 ```bash

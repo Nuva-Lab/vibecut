@@ -73,15 +73,15 @@ export const RollingCaption: React.FC<RollingCaptionProps> = ({caption}) => {
           }}
         >
           {hasWordTiming ? (
-            // Karaoke style: highlight current word
+            // Karaoke style: highlight current word with spaces
             caption.words!.map((word, i) => {
               // Handle edge case where startMs == endMs (alignment failed for this word)
-              // Use a minimum duration of 1ms to avoid interpolation errors
               const safeEndMs = word.endMs > word.startMs ? word.endMs : word.startMs + 1;
 
               // Word states: upcoming (white), active (gold), spoken (white)
               const isActive = currentMs >= word.startMs && currentMs <= safeEndMs;
               const isSpoken = currentMs > safeEndMs;
+              const isLast = i === caption.words!.length - 1;
 
               return (
                 <span
@@ -90,9 +90,9 @@ export const RollingCaption: React.FC<RollingCaptionProps> = ({caption}) => {
                     color: isActive ? HIGHLIGHT_COLOR : TEXT_COLOR,
                     opacity: isSpoken ? 0.9 : 1,
                     transition: 'color 0.05s ease',
-                    // Slight scale on active word
                     transform: isActive ? 'scale(1.05)' : 'scale(1)',
                     display: 'inline-block',
+                    marginRight: isLast ? 0 : '0.3em',  // Explicit spacing between words
                   }}
                 >
                   {word.text}
