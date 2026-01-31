@@ -248,23 +248,43 @@ python generate_captions.py word_transcript.json kept_segments.json -o output/
 adjusted_time = word_start - segment_start + cumulative_offset
 ```
 
-**Phrase grouping rules:**
-- Max 12 words per phrase
-- Max 4 seconds duration
-- Break on 300ms+ pauses
-- Break on sentence-ending punctuation
+**Phrase grouping by aspect ratio:**
+| Aspect | Max Words | Max Chars | Max Duration |
+|--------|-----------|-----------|--------------|
+| Horizontal (16:9) | 8 | 50 | 3.5s |
+| Vertical (9:16) | 5 | 30 | 2.5s |
 
 **Output:**
-- `captions.json`: Phrases with word-level timestamps for karaoke
-- `sections.json`: Pop-up section markers at topic transitions
+- `captions_horizontal.json`: Phrases for 16:9
+- `captions_vertical.json`: Phrases for 9:16 (shorter)
+
+### generate_sections.py
+
+Uses Gemini to create meaningful section titles from the transcript.
+
+```bash
+python generate_sections.py word_transcript.json kept_segments.json -o sections.json -n 4
+```
+
+**Output example:**
+```json
+{
+  "sections": [
+    {"title": "VC HYPOCRISY EXPOSED", "startMs": 0, "durationMs": 3000},
+    {"title": "READING VC SIGNALS", "startMs": 47500, "durationMs": 3000}
+  ]
+}
+```
 
 ### render_with_captions.py
 
-Renders both 16:9 and 9:16 formats using Remotion.
+Renders both 16:9 and 9:16 formats using Remotion with cinematic overlays.
 
 ```bash
-python render_with_captions.py trimmed.mp4 captions.json \
+python render_with_captions.py trimmed.mp4 captions_dir/ \
   --sections sections.json \
+  --speaker "Speaker Name" \
+  --speaker-title "Title/Role" \
   --speaker-center 0.5 \
   -o output/
 ```
@@ -275,20 +295,35 @@ python render_with_captions.py trimmed.mp4 captions.json \
 | `*_captioned.mp4` | 1920x1080 | YouTube, LinkedIn |
 | `*_vertical.mp4` | 1080x1920 | TikTok, Reels, Shorts |
 
-**Vertical crop:** Centers on speaker position (`--speaker-center 0.5` = center, `0.3` = left third).
+**Vertical crop:** Centers on speaker position (`--speaker-center 0.5` = center).
 
 ## Remotion Components
 
-The pipeline uses these Remotion components:
+The pipeline uses these cinematic Remotion components:
 
-- `TalkingHeadClip.tsx`: Main composition for talking-head videos
-- `RollingCaption.tsx`: Karaoke-style captions with gold word highlighting
-- `SectionTitle.tsx`: Pop-up "pill" style section markers
+| Component | Style |
+|-----------|-------|
+| `TalkingHeadClip.tsx` | Main composition with all overlays |
+| `RollingCaption.tsx` | Karaoke captions with gold word highlighting |
+| `SectionTitle.tsx` | Cinematic gradient text + animated lines |
+| `SpeakerLabel.tsx` | Gradient border card with slide-in animation |
 
 **Caption styling:**
-- Background: Semi-transparent black
+- Background: Semi-transparent black with rounded corners
 - Text: White, gold highlight on current word
-- Animation: 2-frame spring entrance (66ms)
+- Word spacing: `marginRight: 0.3em` (CSS inline-block fix)
+
+**Section title styling:**
+- Background dim overlay
+- Gradient text (white → gold)
+- Animated top/bottom lines
+- 3-second duration with bounce animation
+
+**Speaker label styling:**
+- Gradient border (gold → orange)
+- Large name (52px) with slide-in
+- Gradient title text
+- 8-second display at video start
 
 ## Complete Example
 
@@ -301,18 +336,33 @@ python skills/chunk-process/mlx_transcribe.py chunks/ --batch --word-timestamps
 python skills/talking-head/sentence_split.py raw.mp4 chunks/transcript.json -o clips/
 python skills/talking-head/analyze_script.py clips/clip_index.json -o topics.json
 
-# 3. Select topic and stitch
+# 3. Select topic and stitch (Claude Code reviews topics, user picks one)
 python skills/talking-head/stitch_clips.py topics.json --topic 10 -o topic10_raw.mp4
 
-# 4. Precision trim
+# 4. Precision trim (removes fillers, stutters)
 python skills/talking-head/precision_trim.py run topic10_raw.mp4 -o trimmed/
 
-# 5. Generate captions and render
+# 5. Generate captions (aspect-ratio aware)
 python skills/talking-head/generate_captions.py \
-  trimmed/word_transcript.json trimmed/kept_segments.json -o trimmed/
+  trimmed/word_transcript.json trimmed/kept_segments.json \
+  --speaker "Xiaoyin Qu" --speaker-title "Founder of heyboss.ai" \
+  -o trimmed/
+
+# 6. Generate section titles (Gemini)
+python skills/talking-head/generate_sections.py \
+  trimmed/word_transcript.json trimmed/kept_segments.json \
+  -o trimmed/sections.json -n 4
+
+# 7. Render both formats
 python skills/talking-head/render_with_captions.py \
-  trimmed/trimmed.mp4 trimmed/captions.json \
-  --sections trimmed/sections.json -o final/
+  trimmed/trimmed.mp4 trimmed/ \
+  --sections trimmed/sections.json \
+  --speaker "Xiaoyin Qu" --speaker-title "Founder of heyboss.ai" \
+  -o final/
 ```
 
-**Result:** `final/trimmed_captioned.mp4` (16:9) + `final/trimmed_vertical.mp4` (9:16)
+**Result:**
+- `final/trimmed_captioned.mp4` (16:9, ~140MB)
+- `final/trimmed_vertical.mp4` (9:16, ~178MB)
+
+Both with rolling captions, speaker label, and cinematic section titles!
