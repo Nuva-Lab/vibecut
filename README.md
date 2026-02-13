@@ -1,3 +1,5 @@
+![Generated Image February 01, 2026 - 10_19PM](https://github.com/user-attachments/assets/65a33988-4da9-476a-9274-7803257d13e2)
+
 # vibecut
 
 > AI-powered video clip production using agent skills
