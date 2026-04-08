@@ -1,11 +1,15 @@
 ---
 name: align-captions
-description: Align script text to audio with karaoke-style word timestamps using Qwen3-ForcedAligner + jieba
+description: >
+  Generate karaoke-style word-level timestamps by aligning script text to audio
+  using Qwen3-ForcedAligner + jieba for Chinese word segmentation.
+  Use when the user says 'align captions', 'karaoke timestamps', 'word timestamps',
+  'caption alignment', 'sync text to audio'.
 ---
 
 # align-captions
 
-Align existing script text to audio for karaoke-style captions. Uses Qwen3-ForcedAligner-0.6B for ~30ms timestamp precision and jieba for proper Chinese word segmentation.
+Align existing script text to audio for karaoke-style captions. Uses Qwen3-ForcedAligner-0.6B (~30ms precision) and jieba for Chinese word segmentation (groups characters into natural words).
 
 ## Pipeline
 
@@ -42,37 +46,19 @@ Designed for Remotion karaoke rendering:
 {
   "segments": [
     {
-      "text": "当全世界都在追AI的时候，",
-      "startMs": 240,
-      "endMs": 2080,
+      "text": "当全世界...",
+      "startMs": 240, "endMs": 2080,
       "words": [
         {"text": "当", "startMs": 240, "endMs": 400},
-        {"text": "全世界", "startMs": 400, "endMs": 880},
-        {"text": "都", "startMs": 880, "endMs": 960},
-        {"text": "在", "startMs": 960, "endMs": 1120},
-        {"text": "追", "startMs": 1120, "endMs": 1280},
-        {"text": "AI", "startMs": 1280, "endMs": 1600},
-        {"text": "的", "startMs": 1600, "endMs": 1680},
-        {"text": "时候", "startMs": 1680, "endMs": 2080}
+        {"text": "全世界", "startMs": 400, "endMs": 880}
       ]
     }
   ],
-  "word_segments": [...],  // All words flat
+  "word_segments": [...],
   "language": "Chinese",
   "model": "Qwen3-ForcedAligner-0.6B"
 }
 ```
-
-## Key Feature: Chinese Word Segmentation
-
-Uses jieba to group characters into proper Chinese words:
-
-| Without jieba | With jieba |
-|---------------|------------|
-| 当-全-世-界 | 当-全世界 |
-| (too fast) | (natural pace) |
-
-This is critical for karaoke-style captions to feel natural.
 
 ## Programmatic Usage
 
@@ -100,10 +86,12 @@ The `make_video.py` script automatically uses align-captions when:
 
 The output is passed to Remotion's `RollingCaption` component for karaoke rendering.
 
+## Error Recovery
+
+- **Audio file not found**: Verify the path exists before calling. The script will raise `FileNotFoundError` -- check `project.json` for the correct voiceover path.
+- **Model download fails**: Qwen3-ForcedAligner (~1GB) downloads on first run. If it fails (network/disk), retry or manually download to the HuggingFace cache (`~/.cache/huggingface/`).
+- **jieba not installed**: Run `pip install jieba`. Without it, Chinese text falls back to character-level timestamps (no word grouping).
+
 ## Notes
 
-- First run downloads Qwen3-ForcedAligner (~1GB)
-- Runs on CPU by default (quality first)
-- ~30ms timestamp precision (SOTA)
-- Supports 11 languages for alignment: Chinese, English, Cantonese, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish
-- Chinese word segmentation uses jieba (must be installed)
+- Supports 11 languages: Chinese, English, Cantonese, French, German, Italian, Japanese, Korean, Portuguese, Russian, Spanish
